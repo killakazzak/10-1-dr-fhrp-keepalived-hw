@@ -43,6 +43,103 @@ virtual_ipaddress {
 
 *Пришлите скриншот рабочей конфигурации и состояния сервиса для каждого нода.*
 
+### Решение Задание 1
+
+
+
+Установка keepalived (rocky-master и rocky-worker)
+
+```
+yum install keepalived -y
+```
+
+Настройка keepalived на rocky-master (MASTER)
+
+```
+vrrp_track_process check_nginx {
+    process "nginx"
+    }
+	
+vrrp_instance tenda {
+    state MASTER
+    interface ens33
+    virtual_router_id 10
+    priority 255
+    advert_int 1
+	
+authentication {
+    auth_type md5
+    auth_pass password
+    }
+
+unicast_peer {
+    10.159.86.99
+    }
+
+virtual_ipaddress {
+    10.159.86.110 dev ens33 label ens33:vip
+    }
+
+track_process {
+    check_nginx
+    }
+
+}
+
+```
+Настройка keepalived на rocky-master (SLAVE)
+```
+
+vrrp_instance tenda {
+    state SLAVE
+    interface ens33
+    virtual_router_id 10
+    priority 100
+    advert_int 1
+	
+authentication {
+    auth_type md5
+    auth_pass password
+    }
+
+unicast_peer {
+    10.159.86.98
+    }
+
+virtual_ipaddress {
+    10.159.86.110 dev ens33 label ens33:vip
+    }
+}
+```
+Проверка на rocky-master (MASTER)
+
+```
+systemctl status keepalived.service && ip a
+```
+![image](https://github.com/killakazzak/hw-Disaster-Recovery.-FHRP-Keepalived/assets/32342205/e1ed189f-016d-4372-b8ff-d62542aeaa17)
+
+Проверка на rocky-master (SLAVE)
+
+```
+systemctl status keepalived.service && ip a
+```
+![image](https://github.com/killakazzak/hw-Disaster-Recovery.-FHRP-Keepalived/assets/32342205/7a05168c-3c74-4249-b369-95856e1d27e8)
+
+Переключение на rocky-master (MASTER)
+```
+systemctl stop nginx
+systemctl status keepalived.service && ip a
+```
+
+![image](https://github.com/killakazzak/hw-Disaster-Recovery.-FHRP-Keepalived/assets/32342205/35e394e3-baa5-4720-b781-b89f0d24420e)
+
+Проверка на rocky-master (SLAVE)
+```
+systemctl status keepalived.service && ip a
+```
+![image](https://github.com/killakazzak/hw-Disaster-Recovery.-FHRP-Keepalived/assets/32342205/7acd9d55-6539-4f46-b1b6-95186d6d5859)
+
+
 ## Дополнительные задания со звёздочкой*
 
 Эти задания дополнительные. Их можно не выполнять. На зачёт это не повлияет. Вы можете их выполнить, если хотите глубже разобраться в материале.
