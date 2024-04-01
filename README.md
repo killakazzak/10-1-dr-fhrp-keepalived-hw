@@ -154,6 +154,15 @@ systemctl status keepalived.service && ip a
 - найдите пакеты ICMP, в которых будет отображён процесс изменения MAC-адреса одной ноды на другой. 
 
  *Пришлите скриншот до и после выключения интерфейса из Wireshark.*
+До переключения
+
+![image](https://github.com/killakazzak/hw-Disaster-Recovery.-FHRP-Keepalived/assets/32342205/d2286c30-5a1f-4c54-8994-c1eb52ffcc21)
+
+После переключения
+
+![image](https://github.com/killakazzak/hw-Disaster-Recovery.-FHRP-Keepalived/assets/32342205/deca32eb-1220-4bf7-b74c-8719257838ac)
+
+
 
 
 
